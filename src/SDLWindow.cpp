@@ -180,9 +180,9 @@ void SDLWindow::render()
 
 Coord2D SDLWindow::getScreenCoords(double x, double y){
     Coord2D coords;
-    double Sy = (double)SCREEN_HEIGHT;
+    double Sy = (double)getHeight();
     double sy =  -y + Sy/2.0;
-    double Sx = (double)SCREEN_WIDTH;
+    double Sx = (double) getWidth();
     double sx = x + Sx/2.0;
     coords.x = sx;
     coords.y = sy;

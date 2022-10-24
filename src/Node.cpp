@@ -21,6 +21,7 @@ Node::Node(SDLWindow * win){
     health = 50*((float)rand()/ RAND_MAX)+50;
 }
 
+
 void Node::drawSelf(SensorWindow * screen){
     Coord2D coords = screen->getScreenCoords(this->m_x, this->m_y);
     int x = coords.x;
@@ -29,6 +30,7 @@ void Node::drawSelf(SensorWindow * screen){
     SDL_SetRenderDrawColor(screen->mRenderer, colRed, colGreen, colBlue, 0xFF );
     SDL_Rect fillRect = {x-1, y-1, 3, 3};
     SDL_RenderFillRect( screen->mRenderer, &fillRect );
+
 }
 
  

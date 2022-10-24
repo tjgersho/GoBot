@@ -11,6 +11,13 @@
 #include <thread>
 #include "Label.hpp"
 
+ 
+#include <boost/asio.hpp>
+#include <boost/bind/bind.hpp>
+#include <signal.h>
+#include "server.hpp"
+#include "file_handler.hpp"
+
 
 #include <thread>         // std::this_thread::sleep_for
 #include <chrono>         // std::chrono::seconds
@@ -215,14 +222,45 @@ bool GoBot::initWindows(){
  
     goWin->init();
    
- 
-
-
+    
    return success;
+}
+
+void GoBot::runServer(){
+	try
+    {
+    // Check command line arguments.
+     
+ 
+    boost::asio::io_context io_context;
+
+    // Launch the initial server coroutine.
+    http::server4::server(io_context, "127.0.0.1", "8085", http::server4::file_handler("www"))();
+
+    // Wait for signals indicating time to shut down.
+    boost::asio::signal_set signals(io_context);
+    signals.add(SIGINT);
+    signals.add(SIGTERM);
+#if defined(SIGQUIT)
+    signals.add(SIGQUIT);
+#endif // defined(SIGQUIT)
+    signals.async_wait(boost::bind(
+          &boost::asio::io_context::stop, &io_context));
+
+    // Run the server.
+    io_context.run();
+  }
+  catch (std::exception& e)
+  {
+    std::cerr << "exception: " << e.what() << "\n";
+  }
 }
 
 int GoBot::run(){  ///Main loop this gives a GUI interface connection to the brain.  There are same number of screens as sensors/senses
     std::cout << "Startung Up GoBot" << std::endl;
+
+
+	std::thread serverThread(&GoBot::runServer, this);
 
     // Create Graphical Environment..
 	//... OR do sensor windows..// not sure...
@@ -270,11 +308,9 @@ int GoBot::run(){  ///Main loop this gives a GUI interface connection to the bra
     std::unique_ptr<ThreadPool> threadPool(new ThreadPool(sensorCount));
     
     while (true) {
- 
+        auto start = std::chrono::high_resolution_clock::now();
         render();
-        
-      //  getWindowCmds();
-   
+        //  getWindowCmds();
 		goWin->processInput();
 
         //Think();
@@ -285,68 +321,74 @@ int GoBot::run(){  ///Main loop this gives a GUI interface connection to the bra
         if(exitProg){
             break;
         }
+
+        auto elapsed = std::chrono::high_resolution_clock::now() - start;
+
+        long long milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(
+                elapsed).count();
+
+        refreshRate = 1/(milliseconds/1000.0);
     }
     
     //Windows have been closed..
     
- 
+	serverThread.join();
+
     SDL_DestroyMutex(mutex);
     
     return 0;
 }
 
+
 void GoBot::render(){
     //Update all windows
     
-      //  Draw the screen
-       int sensorCount = brain->senses.size();
+    //  Draw the screen
+    int sensorCount = brain->senses.size();
 
-       int elapsed = SDL_GetTicks();
-	   
+    int elapsed = SDL_GetTicks();
     
-	   goWin->render();
+    goWin->render();
+
+    for( int i = 0; i < sensorCount; ++i )
+    {
+        if(!sensorWindows[ i ]->DoNotRender){
+            isWaitingToRenderWindows = false;
     
-       for( int i = 0; i < sensorCount; ++i )
-       {
-           
-           if(!sensorWindows[ i ]->DoNotRender){
-                     isWaitingToRenderWindows = false;
-               
-                      //Here is where we render the sensor windows:::::
-                    
-                      sensorWindows[ i ]->render(i, elapsed);
-          }else{
-                     if(isWaitingToRenderWindows){
-                         RenderTimer = elapsed;
-                     }else{
-                         initRenderTimer = elapsed;
-                         isWaitingToRenderWindows = true;
-                     }
+            //Here is where we render the sensor windows:::::
+            sensorWindows[ i ]->render(i, elapsed);
+        }else{
+            if(isWaitingToRenderWindows){
+                RenderTimer = elapsed;
+            }else{
+                initRenderTimer = elapsed;
+                isWaitingToRenderWindows = true;
+            }
 
-                     if(RenderTimer - initRenderTimer > 500){
-                         sensorWindows[ i ]->DoNotRender = false;
-                     }
-             }
+            if(RenderTimer - initRenderTimer > 500){
+                sensorWindows[ i ]->DoNotRender = false;
+            }
+        }
 
-          
-       }
+        
+    }
 
-       //Check all windows
-       bool allWindowsClosed = true;
-       for( int i = 0; i < sensorCount; ++i )
-       {
-           if( sensorWindows[ i ]->isShown() )
-           {
-               allWindowsClosed = false;
-               break;
-           }
-       }
+    //Check all windows
+    bool allWindowsClosed = true;
+    for( int i = 0; i < sensorCount; ++i )
+    {
+        if( sensorWindows[ i ]->isShown() )
+        {
+            allWindowsClosed = false;
+            break;
+        }
+    }
 
-       //Application closed all windows
-       if( allWindowsClosed )
-       {
-           exitProg = true;
-       }
+    //Application closed all windows
+    if( allWindowsClosed )
+    {
+        exitProg = true;
+    }
 }
 
 //void GoBot::Think(){

@@ -17,7 +17,7 @@ class GoBotWin: public GUIElem, public SDLWindow{
 public:
     GoBotWin(GoBot& bot){
         goBot = std::shared_ptr<GoBot>(&bot);
-        hitBox = QuadBox<float>(0, 0, SDLWindow::SCREEN_WIDTH, SDLWindow::SCREEN_HEIGHT);
+        hitBox = QuadBox<float>(0, 0, SDLWindow::getWidth(), SDLWindow::getHeight());
         //guiElemQuadTree = QuadTree<GUIElem*, decltype(getBox)>(hitBox, getBox);
         std::cout << "HELOO GO BOT WIN" << std::endl;
         // guiElemQuadTree = QuadTree(hitBox, getBox);

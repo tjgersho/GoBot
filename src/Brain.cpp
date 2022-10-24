@@ -548,10 +548,10 @@ void Brain::drawSelf(SensorWindow * screen, int elapsed, unsigned long sdHash){
 
 void Brain::drawFeedBackButtons(SensorWindow * screen) {
  
-    feedbackNo.draw_rect.x = screen->SCREEN_WIDTH / 2 - 120;
-    feedbackNo.draw_rect.y = screen->SCREEN_HEIGHT - 60;
-	feedbackYes.draw_rect.x = screen->SCREEN_WIDTH / 2 + 20;
-    feedbackYes.draw_rect.y = screen->SCREEN_HEIGHT - 60;
+    feedbackNo.draw_rect.x = screen->getWidth() / 2 - 120;
+    feedbackNo.draw_rect.y = screen->getHeight() - 60;
+	feedbackYes.draw_rect.x = screen->getWidth() / 2 + 20;
+    feedbackYes.draw_rect.y = screen->getHeight() - 60;
  
     feedbackNo.drawSelf(screen);
 	feedbackYes.drawSelf(screen);
@@ -577,7 +577,7 @@ void Brain::drawBrainState(SensorWindow * screen) {
 		//	printf("Failed to render text texture!\n");
 	}
 
-	screen->brainStateText->m_texture->render(screen->SCREEN_WIDTH - 170, 0);
+	screen->brainStateText->m_texture->render(screen->getWidth() - 170, 0);
 }
 
 
@@ -602,7 +602,7 @@ void Brain::drawAwakeInference(SensorWindow * screen, unsigned long sdHash) {
 		//    printf("Failed to render text texture!\n");
 	}
 
-	screen->currentAwakeBrainInference->m_texture->render(screen->SCREEN_WIDTH / 2 - 50, screen->SCREEN_HEIGHT - 100);
+	screen->currentAwakeBrainInference->m_texture->render(screen->getWidth() / 2 - 50, screen->getHeight() - 100);
 }
 
 
@@ -628,5 +628,5 @@ void Brain::drawInferenceData(SensorWindow * screen, unsigned long sdHash) {
 		//    printf("Failed to render text texture!\n");
 	}
 
-	screen->currentBrainInference->m_texture->render(5, screen->SCREEN_HEIGHT - 30);
+	screen->currentBrainInference->m_texture->render(5, screen->getHeight() - 30);
 }

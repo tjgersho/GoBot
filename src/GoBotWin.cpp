@@ -1,8 +1,14 @@
 #include "GoBotWin.hpp"
 #include <iostream>
 #include "Label.hpp"
+#include "Polygon.hpp"
+#include "Border.hpp"
+#include "Button.hpp"
+#include "GoNode.hpp"
+#include "GoNet.hpp"
+#include "NetBuildArea.hpp"
+#include "Utils.hpp"
 
- 
 void GoBotWin::drawSelf(SDLWindow * window){
     GUIElem::drawSelf(window);
 }
@@ -12,40 +18,135 @@ void GoBotWin::init(){
     
     SDLWindow::init();
 
-    auto nLabel = std::make_shared<Label>();
-	nLabel->text = "Fun Times";
-	nLabel->setTextColor({0x00, 0x00, 0x00});
-	nLabel->hitBox.left = 10;
-	nLabel->hitBox.top = 10;
-	nLabel->hitBox.width = 100;
-	nLabel->hitBox.height = 30;
+	// This is a bug.. why do i need to push a trash element on first.
+    auto trash = std::make_shared<Label>(); 
+	trash->text = "A";
+	addGuiElem(trash);
+	////////////////////////////////////////////////////////
+
+	
+	auto netBuildArea = std::make_shared<NetBuildArea>(this);
+	netBuildArea->onClick = std::bind(&GoBot::addNodeToNet, goBot.get(), std::placeholders::_1, std::placeholders::_2);
+	addGuiElem(netBuildArea);
+
+    auto appTitle = std::make_shared<Label>();
+	appTitle->text = "GoBot";
+	appTitle->setTextColor({0xFF, 0x00, 0x00, 0xFF});
+	appTitle->setFontSize(20);
+	appTitle->hitBox.left = 10;
+	appTitle->hitBox.top = 10;
+	appTitle->hitBox.width = 100;
+	appTitle->hitBox.height = 30;
+	addGuiElem(appTitle);
+
+	auto appRenderRate = std::make_shared<Label>();
+	appRenderRate->text =  std::to_string(goBot.get()->refreshRate) +  "HZ";
+	appRenderRate->update =  [=](){
+		appRenderRate->text = Utils::doubleToStr(goBot.get()->refreshRate, 2) +  "HZ";
+		appRenderRate->hitBox.left = getWidth()-110;
+	};
+
+	appRenderRate->setTextColor({0xFF, 0x33, 0x00, 0xFF});
+	appRenderRate->setFontSize(10);
+	appRenderRate->hitBox.left = getWidth()-110;
+	appRenderRate->hitBox.top = 10;
+	appRenderRate->hitBox.width = 100;
+	appRenderRate->hitBox.height = 30;
+	addGuiElem(appRenderRate);
+	// appTitle->onClick = [=](GUIElem* elem, SDL_Event evt){
+	// 		std::cout << "Label CLICK???" << std::endl;
+ 	// 	 	appTitle->text = "SWEEEET"; 
+	// 		goBot.get()->counter++;
+	// 		appTitle->setFontSize(goBot.get()->counter);
+		   
+	//  };  // std::bind(&GoBot::clickTest, goBot.get(), std::placeholders::_1, std::placeholders::_2);
+	 
+	//addGuiElem(appTitle);
+
+	// auto appTitle1 = std::make_shared<Label>();
+	// appTitle1->text = "GoBot1";
+	// appTitle1->setTextColor({0xFF, 0x00, 0x00, 0xFF});
+	// appTitle1->setFontSize(20);
+	// appTitle1->hitBox.left = 106;
+	// appTitle1->hitBox.top = 106;
+	// appTitle1->hitBox.width = 106;
+	// appTitle1->hitBox.height = 36;
  
+	// appTitle->onClick = [=](GUIElem* elem, SDL_Event evt){
+	// 		std::cout << "Label CLICK???" << std::endl;
+ 	// 	 	appTitle->text = "SWEEEET"; 
+	// 		goBot.get()->counter++;
+	// 		appTitle->setFontSize(goBot.get()->counter);
+		   
+	//  };  // std::bind(&GoBot::clickTest, goBot.get(), std::placeholders::_1, std::placeholders::_2);
+	 
+	//addGuiElem(appTitle1);
 
-	auto nLabel1 = std::make_shared<Label>();
-    std::stringstream strstream;
-    strstream << goBot->counter;
-	strstream >> nLabel1->text;
-	nLabel1->setTextColor({0x00, 0x00, 0x00});
-	nLabel1->hitBox.left = 100;
-	nLabel1->hitBox.top = 100;
-	nLabel1->hitBox.width = 100;
-	nLabel1->hitBox.height = 30;
-    nLabel1->onClick = std::bind(&GoBot::clickTest, goBot.get(), std::placeholders::_1, std::placeholders::_2);
 
-    nLabel1->children.push_back(nLabel);
+	// for(int i=0; i< 25; i++){
+    //     auto node1 = std::make_shared<GoNode>(this);
+    //     node1->m_x = i*10;
+    //     node1->m_y = i*10;
+    // 	addGuiElem(node1);
+    // }
+  
+	 addGuiElem(goBot->netTest);
+
+	// auto nLabel1 = std::make_shared<Label>();
+    // std::stringstream strstream;
+    // strstream << goBot->counter;
+	// strstream >> nLabel1->text;
+	// nLabel1->setTextColor({0x00, 0xFF, 0x00, 0xFF});
+	// nLabel1->hitBox.left = 100;
+	// nLabel1->hitBox.top = 100;
+	// nLabel1->hitBox.width = 100;
+	// nLabel1->hitBox.height = 30;
+    // nLabel1->onClick = std::bind(&GoBot::clickTest, goBot.get(), std::placeholders::_1, std::placeholders::_2);
+
+    // nLabel1->children.push_back(nLabel);
  
-	addGuiElem(nLabel1);
-
-    for(int i=0; i< 25; i++){
-        auto node1 = std::make_shared<Node>(this);
-        node1->m_x = i*10;
-        node1->m_y = i*10;
-    	addGuiElem(node1);
-    }
-
-
  
-    GUIElem::init();
+	// addGuiElem(nLabel1);
+
+    // for(int i=0; i< 25; i++){
+    //     auto node1 = std::make_shared<Node>(this);
+    //     node1->m_x = i*10;
+    //     node1->m_y = i*10;
+    // 	addGuiElem(node1);
+    // }
+
+	// auto poly1 = std::make_shared<Polygon>();
+	// poly1->setLineColor({0xFF, 0x00, 0xFF});
+	// poly1->setFillColor({0xFF, 0xFF, 0xFF});
+	// poly1->doFill = false;
+	// poly1->hitBox.left = 50;
+	// poly1->hitBox.top = 200;
+	// poly1->hitBox.width = 100;
+	// poly1->hitBox.height = 30;
+	// addGuiElem(poly1);
+
+	// auto border1 = std::make_shared<Border>();
+ 	// addGuiElem(border1);
+
+
+	auto btn1 = std::make_shared<Button>();
+	btn1->init();
+	btn1->label->text = "Load GoBot Net";
+	btn1->label->setTextColor({0xEE, 0xEE, 0xEE, 0xFF});
+	btn1->rect->setFillColor({0x33, 0x33, 0x33, 0x33});
+	btn1->rect->setLineColor({0xFF, 0xFF, 0xFF, 0xFF});
+	btn1->rect->setHoverColor({0x30, 0x30, 0x30, 0x30});
+	SDL_Rect rect = {150, 0, 150, 50};
+	btn1->setRect(rect);
+	btn1->onClick = [=](GUIElem* elem, SDL_Event evt){
+		std::cout << "BTN CLICK???" << std::endl;
+ 		auto file = Utils::openGoBot();
+		 
+		std::cout << "File Name:  " << file << std::endl;
+	 };  // std::bind(&GoBot::clickTest, goBot.get(), std::placeholders::_1, std::placeholders::_2);
+	addGuiElem(btn1);
+
+    //GUIElem::init();
      
 }
 
@@ -61,7 +162,7 @@ void GoBotWin::render(){
 
  void  GoBotWin::addGuiElem(std::shared_ptr<GUIElem> elm){
     children.push_back(elm);
-    guiElemQuadTree.add(elm.get());
+   // guiElemQuadTree.add(elm.get());
  }
 
 
@@ -79,30 +180,37 @@ void GoBotWin::render(){
         //do all mouse events onto gui elems..
 
         if ( evnt.type == SDL_MOUSEBUTTONUP || evnt.type == SDL_MOUSEBUTTONDOWN) { // Mouse move event..//
-		 	SDL_Log("Mouse %d moved to %d,%d", evnt.window.windowID, evnt.motion.x, evnt.motion.y); 
+		 	//SDL_Log("Mouse %d moved to %d,%d", evnt.window.windowID, evnt.motion.x, evnt.motion.y); 
  
-            QuadBox<float> newQuadBox = QuadBox<float>(evnt.motion.x, evnt.motion.y, 1, 1);
-            auto intersections = guiElemQuadTree.query(newQuadBox);
+            // QuadBox<float> newQuadBox = QuadBox<float>(evnt.motion.x, evnt.motion.y, 1, 1);
+            // auto intersections = guiElemQuadTree.query(newQuadBox);
 
-            for(auto inter: intersections){
-                inter->processEvent(evnt);
-            }
+            // for(auto inter: intersections){
+            //     inter->processEvent(evnt);
+            // }
+
+			for(auto child : children){
+				child->processEvent(evnt);
+			}
 
 		}
 
 
         if ( evnt.type == SDL_MOUSEMOTION ) { // Mouse move event..//
-		 	SDL_Log("Mouse %d moved to %d,%d", evnt.window.windowID, evnt.motion.x, evnt.motion.y); 
+		 	//SDL_Log("Mouse %d moved to %d,%d", evnt.window.windowID, evnt.motion.x, evnt.motion.y); 
  
             // QuadBox<float> newQuadBox = QuadBox<float>(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
             // auto intersections = guiElemQuadTree.query(newQuadBox);
-            std::vector<std::shared_ptr<GUIElem>> allElems;
-            getAllNodes(allElems);
+            // std::vector<std::shared_ptr<GUIElem>> allElems;
+            // getAllNodes(allElems);
 
-            for(auto inter: allElems){
-                inter->processEvent(evnt);
-            }
+            // for(auto inter: allElems){
+            //     inter->processEvent(evnt);
+            // }
 
+			for(auto child : children){
+				child->processEvent(evnt);
+			}
 		}
 
   
@@ -220,7 +328,12 @@ void GoBotWin::render(){
 				SDL_Log("Window %d size changed to %dx%d",
 					evnt.window.windowID, evnt.window.data1,
 					evnt.window.data2);
+					setScreenWidth(evnt.window.data1);
+					setScreenHeight(evnt.window.data2);
 
+				 	for(auto child : children){
+						child->processEvent(evnt);
+					}
 				break;
 			case SDL_WINDOWEVENT_MINIMIZED:
 				SDL_Log("Window %d minimized", evnt.window.windowID);

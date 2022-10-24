@@ -23,12 +23,12 @@ void Sensor::drawSelf(SensorWindow * screen, int elapsed)
 	switch (brainRef->state) {
 	case AwaitingFeedback:
 	
-		outlineRect = { screen->SCREEN_WIDTH / 6, screen->SCREEN_HEIGHT / 6, screen->SCREEN_WIDTH * 2 / 3, screen->SCREEN_HEIGHT * 2 / 3 };
+		outlineRect = { screen->getWidth() / 6, screen->getHeight() / 6, screen->getWidth() * 2 / 3, screen->getHeight() * 2 / 3 };
 		SDL_SetRenderDrawColor(screen->mRenderer, 0x00, 0xFF, 0x00, 0xFF);
 		SDL_RenderDrawRect(screen->mRenderer, &outlineRect);
 	break;
 	case Learning:
-		outlineRect = { screen->SCREEN_WIDTH - 100, screen->SCREEN_HEIGHT - 200, 90, 90 };
+		outlineRect = { screen->getWidth() - 100, screen->getHeight() - 200, 90, 90 };
 		SDL_SetRenderDrawColor(screen->mRenderer, 0x00, 0xFF, 0x00, 0xFF);
 		SDL_RenderDrawRect(screen->mRenderer, &outlineRect);
 
@@ -42,7 +42,7 @@ void Sensor::drawSelf(SensorWindow * screen, int elapsed)
          
         break;
     case Awake:
-        	outlineRect = { screen->SCREEN_WIDTH / 6, screen->SCREEN_HEIGHT / 6, screen->SCREEN_WIDTH * 2 / 3, screen->SCREEN_HEIGHT * 2 / 3 };
+        	outlineRect = { screen->getWidth() / 6, screen->getHeight() / 6, screen->getWidth() * 2 / 3, screen->getHeight() * 2 / 3 };
             SDL_SetRenderDrawColor(screen->mRenderer, 0x00, 0xFF, 0x00, 0xFF);
             SDL_RenderDrawRect(screen->mRenderer, &outlineRect);
             

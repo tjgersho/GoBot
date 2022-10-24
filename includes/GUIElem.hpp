@@ -18,9 +18,14 @@ class GUIElem {
     public:
 
         virtual void drawSelf(SDLWindow * window){
+            for(auto elm: children){
+                 if(elm->update != nullptr){
+                    elm->update();
+                }
+            }
             drawChildren(window);
         }
-
+ 
        void getAllNodes(std::vector<std::shared_ptr<GUIElem>>& all){
             for(auto elm: children){
                 all.push_back(elm);
@@ -28,11 +33,12 @@ class GUIElem {
             }
         }
 
-        virtual void init(){
-            for ( auto child : children ) {
-               child->init();
-            }
-        }
+        virtual void init(){}
+        
+        std::function<void(void)> update = [=](){
+            
+            
+        };
 
         std::function<void(GUIElem*, SDL_Event)> onClick;
 
@@ -46,6 +52,14 @@ class GUIElem {
 
        virtual void processEvent(SDL_Event evnt) {
             std::cout << "Elem does not process events" << std::endl;
+       }
+
+       bool mouseEventHit(SDL_Event evnt){
+         if(hitBox.left <= evnt.motion.x && (hitBox.left + hitBox.width) >= evnt.motion.x 
+                    && hitBox.top <= evnt.motion.y && (hitBox.top + hitBox.height) >= evnt.motion.y ){
+            return true;
+        }
+        return false;
        }
 
     private:

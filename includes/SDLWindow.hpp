@@ -53,7 +53,15 @@ class SDLWindow
 
         SDL_Renderer* mRenderer;
 
-		//Window dimensions
+        void  setScreenWidth(int width){
+            SCREEN_WIDTH = width;
+        }
+		 void  setScreenHeight(int height){
+            SCREEN_HEIGHT = height;
+        }
+
+    private:
+		//Initial Window dimensions
 		int SCREEN_HEIGHT = 700;
 		int SCREEN_WIDTH = 1000;
 

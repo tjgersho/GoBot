@@ -33,8 +33,9 @@ public:
         m_y = y;
     }
 
-
-    double size = 4;
+    void init(){ }
+    
+    double size = 8;
     
     double health = 0;
     double healthDeclineRate = 0.1;
@@ -101,17 +102,37 @@ public:
  
     float activation;
 
+
+    void draw_circle(int center_x, int center_y, int radius_, SDLWindow * window){
+        // Setting the color to be RED with 100% opaque (0% trasparent).
+       
+    }
+
+
+
     void drawSelf(SDLWindow * window){
         
         Coord2D coords = window->getScreenCoords(this->m_x, this->m_y);
-        int x = coords.x;
-        int y = coords.y;
+        int xcenter = coords.x;
+        int ycenter = coords.y;
+        // SDL_SetRenderDrawColor(window->mRenderer, colRed, colGreen, colBlue, 0xFF );
+        // SDL_Rect fillRect = {x-size/2, y-size/2, size, size};
+        // SDL_RenderFillRect( window->mRenderer, &fillRect );
 
+ 
         SDL_SetRenderDrawColor(window->mRenderer, colRed, colGreen, colBlue, 0xFF );
-        SDL_Rect fillRect = {x-size/2, y-size/2, size, size};
-        SDL_RenderFillRect( window->mRenderer, &fillRect );
+        // Drawing circle
+        for(int x=xcenter-size/2; x<=xcenter+size/2; x++){
+            for(int y=ycenter-size/2; y<=ycenter+size/2; y++){
+                if((std::pow(ycenter-y,2)+std::pow(xcenter-x,2)) <= 
+                    std::pow(size/2,2)){
+                    SDL_RenderDrawPoint(window->mRenderer, x, y);
+                }
+            }
+        }
 
         GUIElem::drawSelf(window);
+ 
     }
 
     void processEvent(SDL_Event evnt) {
@@ -135,7 +156,7 @@ public:
                 colRed = 0xFF;
                 colGreen = 0x00;
                 colBlue = 0x00; 
-                 size = 4;
+                 size = 8;
             }
         }
 

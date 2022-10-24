@@ -78,7 +78,7 @@ void Fact::readFactFromStream(std::istream& f) {
 	// load the std::string, and delete the array
 
 	f.read((char*)&size, sizeof(size));
-	data = new char[size + 1];
+	data = new char[size+1];
 	f.read(data, size);
 	data[size] = '\0';
 	string_data = data;

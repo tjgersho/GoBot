@@ -268,7 +268,7 @@ void iNet::drawNetInferenceData(SensorWindow * screen, unsigned long sdHash) {
 		//    printf("Failed to render text texture!\n");
 	}
 
-	screen->currentiNetInference->m_texture->render(screen->SCREEN_WIDTH - 300, screen->SCREEN_HEIGHT - 30);
+	screen->currentiNetInference->m_texture->render(screen->getWidth() - 300, screen->getHeight() - 30);
 }
 
 void iNet::drawSelf(SensorWindow * screen, int elapsed, long activeNetId, unsigned long sdHash, Brain * brainRef) {

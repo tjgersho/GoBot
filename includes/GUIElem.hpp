@@ -36,8 +36,7 @@ class GUIElem {
         virtual void init(){}
         
         std::function<void(void)> update = [=](){
-            
-            
+            doDrawChildren = true;
         };
 
         std::function<void(GUIElem*, SDL_Event)> onClick;
@@ -55,11 +54,12 @@ class GUIElem {
        }
 
        bool mouseEventHit(SDL_Event evnt){
-         if(hitBox.left <= evnt.motion.x && (hitBox.left + hitBox.width) >= evnt.motion.x 
+            if(hitBox.left <= evnt.motion.x && (hitBox.left + hitBox.width) >= evnt.motion.x 
                     && hitBox.top <= evnt.motion.y && (hitBox.top + hitBox.height) >= evnt.motion.y ){
-            return true;
-        }
-        return false;
+                doDrawChildren = true;
+                return true;
+            }
+            return false;
        }
 
     private:
@@ -67,12 +67,14 @@ class GUIElem {
         std::size_t _id;
 
     protected:
-      
+
+        bool doDrawChildren = false;
 
         void drawChildren(SDLWindow * window){
-           for ( auto child : children ) {
-               child->drawSelf(window);
-           }
+            for ( auto child : children ) {
+                child->drawSelf(window);
+            }
+            doDrawChildren = false;
         }
  
 };

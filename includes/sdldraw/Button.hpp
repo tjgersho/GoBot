@@ -20,12 +20,10 @@ class Button: public GUIElem {
             rect = std::make_shared<Rectangle>();
             rect->init();
             rect->setFillColor({0x30, 0x30, 0x30});
-            
             children.push_back(rect);
             label = std::make_shared<Label>();
             label->init();
             children.push_back(label);
-          
             GUIElem::init();
         }
 

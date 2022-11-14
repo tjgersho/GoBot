@@ -8,6 +8,9 @@
 #include "GoNet.hpp"
 #include "NetBuildArea.hpp"
 #include "Utils.hpp"
+#include "TextEntry.hpp"
+
+
 
 void GoBotWin::drawSelf(SDLWindow * window){
     GUIElem::drawSelf(window);
@@ -146,6 +149,20 @@ void GoBotWin::init(){
 	 };  // std::bind(&GoBot::clickTest, goBot.get(), std::placeholders::_1, std::placeholders::_2);
 	addGuiElem(btn1);
 
+
+	auto textEntry1 = std::make_shared<TextEntry>();
+	textEntry1->init();
+	textEntry1->label->text = "Net ID:";
+	textEntry1->label->setTextColor({0xEE, 0xEE, 0xEE, 0xFF});
+	textEntry1->rect->setFillColor({0x33, 0x33, 0x33, 0x33});
+	textEntry1->rect->setLineColor({0xFF, 0xFF, 0xFF, 0xFF});
+	textEntry1->rect->setHoverColor({0x30, 0x30, 0x30, 0x30});
+	SDL_Rect rect1 = {350, 0, 150, 50};
+	textEntry1->setRect(rect1);
+	textEntry1->onClick = [=](GUIElem* elem, SDL_Event evt){
+	 };  // std::bind(&GoBot::clickTest, goBot.get(), std::placeholders::_1, std::placeholders::_2);
+	addGuiElem(textEntry1);
+
     //GUIElem::init();
      
 }
@@ -226,68 +243,73 @@ void GoBotWin::render(){
 		// 	button_process_event(&brain->feedbackNo, &e);
 		// }
 
-		if (evnt.key.type == SDL_KEYUP) {
-			std::cout << "e KEY SCANCODE << " << std::endl;
-			std::cout << evnt.key.keysym.scancode << std::endl;
+		for(auto child : children){
+				child->processEvent(evnt);
+		 }
 
-			switch (evnt.key.keysym.scancode) {
+		// if (evnt.key.type == SDL_KEYUP) {
+		// 	std::cout << "e KEY SCANCODE << " << std::endl;
+		// 	std::cout << evnt.key.keysym.scancode << std::endl;
 
-			case 7: // D
-				//set brain state to dreaming.
-				//brain->setState(Dreaming);
-				break;
-			case 4: // A
-				//brain->setState(Awake);
-				break;
-			case 15: // L
-				//brain->setState(Learning);
-				break;
-			case 79: //Right Arrow
-			    //Right arrow action..
-				//focus window..
-
-				//update focusedWindow
-				//focusedWindow++;
-				// if (focusedWindow >= sensorCount) {
-				// 	focusedWindow = 0;
-				// }
-				// sensorWindows[focusedWindow]->focus();
-
-				break;
-			case 80: // Left Arrow
-			    //left arrow action..
-
-				// //update focusedWindow
-				// focusedWindow--;
-				// if (focusedWindow < 0) {
-				// 	focusedWindow = sensorCount - 1;
-				// }
-				// sensorWindows[focusedWindow]->focus();
-
-				break;
-			case 81: // Down Arrow
-				//Down arrow action..
-				//sensorWindows[e.window.windowID - 1]->changeActiveNet(-1);
-
-				break;
-			case 82: // Up Arrow
-				//update net index which is being visualized.
-			  // change net view//
-				//maybe add method to change current view index..
-				//sensorWindows[e.window.windowID - 1]->changeActiveNet(1);
-				break;
-			case 44:
-				//Space button.. Change SensorData set.
-				//okay lets change the sensor Window 
-				//sensorWindows[e.window.windowID - 1]->changeActiveSensorDataView();
-
-				break;
 			
-			default:
-				break;
-			}
+		// 	switch (evnt.key.keysym.scancode) {
 
-		}
+		// 	case 7: // D
+		// 		//set brain state to dreaming.
+		// 		//brain->setState(Dreaming);
+		// 		break;
+		// 	case 4: // A
+		// 		//brain->setState(Awake);
+		// 		break;
+		// 	case 15: // L
+		// 		//brain->setState(Learning);
+		// 		break;
+		// 	case 79: //Right Arrow
+		// 	    //Right arrow action..
+		// 		//focus window..
+
+		// 		//update focusedWindow
+		// 		//focusedWindow++;
+		// 		// if (focusedWindow >= sensorCount) {
+		// 		// 	focusedWindow = 0;
+		// 		// }
+		// 		// sensorWindows[focusedWindow]->focus();
+
+		// 		break;
+		// 	case 80: // Left Arrow
+		// 	    //left arrow action..
+
+		// 		// //update focusedWindow
+		// 		// focusedWindow--;
+		// 		// if (focusedWindow < 0) {
+		// 		// 	focusedWindow = sensorCount - 1;
+		// 		// }
+		// 		// sensorWindows[focusedWindow]->focus();
+
+		// 		break;
+		// 	case 81: // Down Arrow
+		// 		//Down arrow action..
+		// 		//sensorWindows[e.window.windowID - 1]->changeActiveNet(-1);
+
+		// 		break;
+		// 	case 82: // Up Arrow
+		// 		//update net index which is being visualized.
+		// 	  // change net view//
+		// 		//maybe add method to change current view index..
+		// 		//sensorWindows[e.window.windowID - 1]->changeActiveNet(1);
+		// 		break;
+		// 	case 44:
+		// 		//Space button.. Change SensorData set.
+		// 		//okay lets change the sensor Window 
+		// 		//sensorWindows[e.window.windowID - 1]->changeActiveSensorDataView();
+
+		// 		break;
+			
+		// 	default:
+		// 		break;
+		// 	}
+
+		// }
 
 		if (evnt.type == SDL_MOUSEMOTION) { // Mouse move event..//
 		/*	SDL_Log("Mouse %d moved to %d,%d",

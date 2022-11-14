@@ -498,7 +498,7 @@ int main(int argc, char**argv) {
     }
 
     std::cout << "EVERYTHING GOOD HERE:)" << std::endl;
-    return 0;
+    //return 0;
 
 
     // int i; // For really large numbers

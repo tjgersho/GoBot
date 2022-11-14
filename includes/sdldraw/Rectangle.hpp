@@ -26,9 +26,9 @@ class Rectangle: public GUIElem{
         void drawSelf(SDLWindow * window){
             SDL_SetRenderDrawColor(window->mRenderer, _lineColor.r,  _lineColor.g,  _lineColor.b,  _lineColor.a);
             SDL_Rect rect = {hitBox.left, hitBox.top, hitBox.width, hitBox.height};
-            SDL_RenderDrawRect(window->mRenderer, &rect);
             SDL_SetRenderDrawColor(window->mRenderer, _fillColor.r,  _fillColor.g,  _fillColor.b,  _fillColor.a);
             SDL_RenderFillRect( window->mRenderer, &rect );
+            SDL_RenderDrawRect(window->mRenderer, &rect);
   
             GUIElem::drawSelf(window);
         }
